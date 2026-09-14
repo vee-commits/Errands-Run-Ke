@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Run Errands Kenya - CBD Foot Logistics</title>
+  <style>
+    :root {
+      --primary: #059669;
+      --primary-dark: #047857;
+      --whatsapp: #25D366;
+      --whatsapp-dark: #128C7E;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--bg); color: var(--text); padding-bottom: 2rem; }
+
+    header { background: var(--primary); color: white; padding: 1.2rem; text-align: center; font-weight: 700; font-size: 1.25rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .container { max-width: 480px; margin: 1rem auto; padding: 0 1rem; }
+
+    .card { background: var(--card); border-radius: 12px; padding: 1.25rem; border: 1px solid var(--border); box-shadow: 0 2px 6px rgba(0,0,0,0.04); margin-bottom: 1rem; }
+    .card h2 { font-size: 1.1rem; margin-bottom: 0.85rem; border-bottom: 1px solid var(--border); padding-bottom: 0.4rem; display: flex; justify-content: space-between; align-items: center; }
+
+    .form-group { margin-bottom: 0.85rem; }
+    label { display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 0.3rem; color: var(--text-muted); }
+    input, select, textarea { width: 100%; padding: 0.65rem; border: 1px solid var(--border); border-radius: 8px; font-size: 0.95rem; outline: none; background: #fff; }
+    input:focus, select:focus, textarea:focus { border-color: var(--primary); }
+
+    .checkbox-group { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.4rem; font-size: 0.85rem; color: var(--text); }
+    .checkbox-group input { width: auto; }
+
+    .btn { background: var(--primary); color: white; border: none; padding: 0.75rem; border-radius: 8px; font-weight: 600; width: 100%; cursor: pointer; font-size: 0.95rem; text-align: center; }
+    .btn:hover { background: var(--primary-dark); }
+    .btn-wa { background: var(--whatsapp); color: white; display: flex; align-items: center; justify-content: center; gap: 0.5rem; text-decoration: none; border-radius: 8px; padding: 0.75rem; font-weight: 600; font-size: 0.95rem; }
+    .btn-wa:hover { background: var(--whatsapp-dark); }
+    .btn-success { background: #2563eb; }
+
+    /* Fare Breakdown & Float Box */
+    .fare-card { background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 10px; padding: 1rem; margin-bottom: 1rem; text-align: center; }
+    .total-fare { font-size: 1.6rem; font-weight: 800; color: var(--primary); }
+    .split-details { display: flex; justify-content: space-around; margin-top: 0.5rem; border-top: 1px dashed #a7f3d0; padding-top: 0.5rem; font-size: 0.8rem; color: #065f46; }
+
+    .badge { font-size: 0.75rem; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 600; }
+    .badge-success { background: #d1fae5; color: #065f46; }
+    .badge-info { background: #dbeafe; color: #1e40af; }
+
+    .star-rating { display: flex; gap: 0.5rem; justify-content: center; margin: 0.75rem 0; font-size: 1.5rem; cursor: pointer; }
+    .star { color: #cbd5e1; }
+    .star.active { color: #f59e0b; }
+  </style>
+</head>
+<body>
+
+  <header>🏃 Run Errands Kenya</header>
+
+  <div class="container">
+    
+    <!-- Messenger Registration & Float Deposit Card -->
+    <div class="card" id="registration-card">
+      <h2>Messenger Onboarding <span class="badge badge-info">KES 100 Deposit</span></h2>
+      <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:0.85rem;">
+        Sign up as an active CBD foot messenger. A refundable <strong>KES 100 float deposit</strong> is required to activate job dispatches and maintain platform safety.
+      </p>
+
+      <div class="form-group">
+        <label>Full Name (as per National ID)</label>
+        <input type="text" id="reg-name" placeholder="e.g. Victor Mwangi">
+      </div>
+
+      <div class="form-group">
+        <label>National ID Number</label>
+        <input type="text" id="reg-id" placeholder="e.g. 12345678">
+      </div>
+
+      <div class="form-group">
+        <label>M-Pesa Registered Phone Number</label>
+        <input type="text" id="reg-phone" placeholder="e.g. 0712345678">
+      </div>
+
+      <div class="fare-card" style="background:#f0fdf4; border-color:#bbf7d0;">
+        <span style="font-size:0.8rem; color:var(--text-muted); font-weight:600;">Refundable Activation Deposit</span>
+        <div class="total-fare">KES 100</div>
+        <div style="font-size:0.75rem; color:#166534; margin-top:0.3rem;">
+          ✓ Fully refundable upon account closure<br>
+          ✓ Deducts 15% platform commissions automatically
+        </div>
+      </div>
+
+      <button class="btn" onclick="registerMessenger()">Pay KES 100 Deposit via M-Pesa & Activate Account</button>
+    </div>
+
+    <!-- Active Messenger Status Header (Shown when logged in) -->
+    <div class="card" id="messenger-bar" style="display:none; background:#ecfdf5; border-color:#a7f3d0;">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <div style="font-size:0.85rem; font-weight:700;" id="m-name">Courier Active</div>
+          <div style="font-size:0.75rem; color:var(--text-muted);" id="m-id">ID: Verified</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:0.75rem; color:var(--text-muted);">Refundable Float</div>
+          <div style="font-size:1.1rem; font-weight:800; color:var(--primary);" id="m-float">KES 100</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dispatch Request & Calculation Form -->
+    <div class="card" id="request-card" style="display:none;">
+      <h2>Create Foot Dispatch</h2>
+      
+      <div class="form-group">
+        <label>Customer Phone Number (for WhatsApp Alerts)</label>
+        <input type="text" id="cust-phone" placeholder="e.g. 254712345678" value="254712345678">
+      </div>
+
+      <div class="form-group">
+        <label>Pickup Location (Shop / Building & Floor)</label>
+        <input type="text" id="pickup-building" placeholder="e.g. Dubois Rd, Peramiho Bldg, Floor 3, Stall 3B">
+      </div>
+
+      <div class="form-group">
+        <label>Pickup Floor Stair Count</label>
+        <select id="pickup-floor" onchange="recalculateFare()">
+          <option value="0">Ground Floor / Level 0 (KES 0)</option>
+          <option value="1">1st Floor (+ KES 20)</option>
+          <option value="2">2nd Floor (+ KES 40)</option>
+          <option value="3" selected>3rd Floor (+ KES 60)</option>
+          <option value="4">4th Floor (+ KES 80)</option>
+        </select>
+        <div class="checkbox-group">
+          <input type="checkbox" id="pickup-lift" onchange="recalculateFare()">
+          <label for="pickup-lift">Working Lift Available at Pickup</label>
+        </div>
+      </div>
+
+      <!-- OPEN & FLEXIBLE DESTINATION TYPE -->
+      <div class="form-group">
+        <label>Destination Type</label>
+        <select id="dest-type">
+          <option value="office">Office / Building (CBD Walk)</option>
+          <option value="bus_stage">Bus / Matatu Stage Drop-off (e.g. Easy Coach, Tea Room, North Rift)</option>
+          <option value="vehicle_handover">Put Parcel on Vehicle / Boda for Delivery Outside CBD</option>
+          <option value="custom">Other Custom Location</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Destination Details & Instructions</label>
+        <input type="text" id="dest-details" placeholder="e.g. Easy Coach Stage - Send via bus to Nakuru / Drop at Kencom Office Floor 4">
+      </div>
+
+      <div class="form-group">
+        <label>Walking Distance Zone</label>
+        <select id="distance-zone" onchange="recalculateFare()">
+          <option value="same_block">Same Block / Nearby Stage (Under 300m) - KES 100 Base</option>
+          <option value="cross_block">2-3 Blocks / Cross-Street (300m - 700m) - + KES 30</option>
+          <option value="cross_cbd" selected>Cross-CBD Walking (700m - 1.5km) - + KES 50</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Package Weight Category</label>
+        <select id="weight-category" onchange="recalculateFare()">
+          <option value="light">Light (Documents, Envelope, 1 Pair Shoes) - KES 0</option>
+          <option value="medium">Medium (2-5 kg, Multiple Boxes, Clothes Bag) - + KES 30</option>
+          <option value="heavy">Heavy (5-10 kg Max Limit for Walking) - + KES 70</option>
+        </select>
+      </div>
+
+      <!-- Live Calculated Fare Box -->
+      <div class="fare-card">
+        <span style="font-size:0.8rem; color:var(--text-muted); font-weight:600;">Calculated Logistics Fare</span>
+        <div class="total-fare" id="display-total-fare">KES 210</div>
+        <div class="split-details">
+          <span>🏃 Messenger Payout (85%): <strong id="display-courier-pay">KES 179</strong></span>
+          <span>💼 Platform Fee (15%): <strong id="display-platform-fee">KES 31</strong></span>
+        </div>
+      </div>
+
+      <button class="btn" onclick="submitDispatch()">Assign Messenger & Generate WhatsApp Dispatch</button>
+    </div>
+
+    <!-- Active Delivery Status Card -->
+    <div class="card" id="active-tracker" style="display:none;">
+      <h2>Active Delivery Tracker <span class="badge badge-success" id="status-badge">DISPATCHED</span></h2>
+      
+      <p style="font-size:0.85rem; margin-bottom:0.4rem;"><strong>From:</strong> <span id="disp-from">-</span></p>
+      <p style="font-size:0.85rem; margin-bottom:0.4rem;"><strong>Destination Type:</strong> <span id="disp-type">-</span></p>
+      <p style="font-size:0.85rem; margin-bottom:0.8rem;"><strong>Instructions:</strong> <span id="disp-to">-</span></p>
+
+      <!-- Instant WhatsApp Trigger Button -->
+      <a href="#" id="wa-link" target="_blank" class="btn-wa">
+        💬 Send Instant WhatsApp Update to Customer
+      </a>
+
+      <!-- Messenger Status Action -->
+      <div id="courier-action-box" style="margin-top:1rem; border-top:1px dashed var(--border); padding-top:1rem;">
+        <button class="btn" onclick="markCollected()" id="collect-btn">Mark Item Picked Up & En Route</button>
+      </div>
+
+      <!-- Customer Action -->
+      <div id="customer-action-box" style="display:none; margin-top:1rem; border-top:1px dashed var(--border); padding-top:1rem;">
+        <button class="btn btn-success" onclick="openReviewModal()">Confirm Completed & Release Fare</button>
+      </div>
+    </div>
+
+    <!-- Rating & Feedback Modal -->
+    <div class="card" id="review-card" style="display:none;">
+      <h2>Delivery Completed</h2>
+      <p style="font-size:0.85rem; color:var(--text-muted); text-align:center;">Rate your foot messenger's speed and handling:</p>
+      
+      <div class="star-rating" id="star-container">
+        <span class="star" onclick="setRating(1)">★</span>
+        <span class="star" onclick="setRating(2)">★</span>
+        <span class="star" onclick="setRating(3)">★</span>
+        <span class="star" onclick="setRating(4)">★</span>
+        <span class="star" onclick="setRating(5)">★</span>
+      </div>
+
+      <button class="btn" onclick="finishOrder()">Submit Feedback & Finish</button>
+    </div>
+
+  </div>
+
+  <script>
+    let currentCalculatedFare = 210;
+    let selectedRating = 5;
+
+    function registerMessenger() {
+      const name = document.getElementById('reg-name').value.trim();
+      const idNum = document.getElementById('reg-id').value.trim();
+      const phone = document.getElementById('reg-phone').value.trim();
+
+      if (!name || !idNum || !phone) {
+        alert("Please enter your Name, National ID Number, and Phone Number.");
+        return;
+      }
+
+      const courier = { name, idNum, phone, float: 100 };
+      localStorage.setItem('rek_courier', JSON.stringify(courier));
+
+      alert(`M-Pesa Prompt sent to ${phone} for KES 100 float deposit. Registration verified!`);
+      
+      loadMessengerProfile();
+    }
+
+    function loadMessengerProfile() {
+      const saved = localStorage.getItem('rek_courier');
+      if (saved) {
+        const courier = JSON.parse(saved);
+        document.getElementById('m-name').innerText = courier.name;
+        document.getElementById('m-id').innerText = `ID: ${courier.idNum} | ${courier.phone}`;
+        document.getElementById('m-float').innerText = `KES ${courier.float}`;
+
+        document.getElementById('registration-card').style.display = 'none';
+        document.getElementById('messenger-bar').style.display = 'block';
+        document.getElementById('request-card').style.display = 'block';
+      }
+    }
+
+    function recalculateFare() {
+      let baseFare = 100;
+      
+      const dist = document.getElementById('distance-zone').value;
+      let distFee = 0;
+      if (dist === 'cross_block') distFee = 30;
+      if (dist === 'cross_cbd') distFee = 50;
+
+      const pickupFloor = parseInt(document.getElementById('pickup-floor').value);
+      const pickupHasLift = document.getElementById('pickup-lift').checked;
+      let stairFee = pickupHasLift ? 0 : (pickupFloor * 20);
+
+      const weight = document.getElementById('weight-category').value;
+      let weightFee = 0;
+      if (weight === 'medium') weightFee = 30;
+      if (weight === 'heavy') weightFee = 70;
+
+      currentCalculatedFare = baseFare + distFee + stairFee + weightFee;
+      
+      const messengerPayout = Math.round(currentCalculatedFare * 0.85);
+      const platformFee = Math.round(currentCalculatedFare * 0.15);
+
+      document.getElementById('display-total-fare').innerText = `KES ${currentCalculatedFare}`;
+      document.getElementById('display-courier-pay').innerText = `KES ${messengerPayout}`;
+      document.getElementById('display-platform-fee').innerText = `KES ${platformFee}`;
+    }
+
+    function submitDispatch() {
+      const phone = document.getElementById('cust-phone').value || '254712345678';
+      const pickup = document.getElementById('pickup-building').value || 'Dubois Road, Peramiho Bldg';
+      const destType = document.getElementById('dest-type').options[document.getElementById('dest-type').selectedIndex].text;
+      const destDetails = document.getElementById('dest-details').value || 'Deliver to specified address/stage';
+
+      document.getElementById('disp-from').innerText = pickup;
+      document.getElementById('disp-type').innerText = destType;
+      document.getElementById('disp-to').innerText = destDetails;
+
+      const waMsg = encodeURIComponent(
+        `👋 *Run Errands Kenya Update*\n\nYour foot messenger has accepted your errand!\n\n📍 *Pickup:* ${pickup}\n🎯 *Destination:* ${destType} (${destDetails})\n💰 *Fare:* KES ${currentCalculatedFare}\n\nYour messenger is walking to handle your errand now.`
+      );
+      document.getElementById('wa-link').href = `https://wa.me/${phone}?text=${waMsg}`;
+
+      document.getElementById('request-card').style.display = 'none';
+      document.getElementById('active-tracker').style.display = 'block';
+    }
+
+    function markCollected() {
+      document.getElementById('status-badge').innerText = 'EN ROUTE / HANDLING';
+      document.getElementById('status-badge').className = 'badge badge-info';
+
+      document.getElementById('courier-action-box').style.display = 'none';
+      document.getElementById('customer-action-box').style.display = 'block';
+    }
+
+    function openReviewModal() {
+      document.getElementById('active-tracker').style.display = 'none';
+      document.getElementById('review-card').style.display = 'block';
+      setRating(5);
+    }
+
+    function setRating(stars) {
+      selectedRating = stars;
+      const starElements = document.querySelectorAll('.star');
+      starElements.forEach((s, idx) => {
+        s.classList.toggle('active', idx < stars);
+      });
+    }
+
+    function finishOrder() {
+      const payout = Math.round(currentCalculatedFare * 0.85);
+      const platformFee = Math.round(currentCalculatedFare * 0.15);
+      
+      const saved = localStorage.getItem('rek_courier');
+      if (saved) {
+        let courier = JSON.parse(saved);
+        courier.float = courier.float - platformFee;
+        localStorage.setItem('rek_courier', JSON.stringify(courier));
+      }
+
+      alert(`Errand completed! KES ${payout} paid to messenger. Platform commission (KES ${platformFee}) deducted from float.`);
+      location.reload();
+    }
+
+    window.onload = function() {
+      loadMessengerProfile();
+      recalculateFare();
+    };
+  </script>
+</body>
+</html>
